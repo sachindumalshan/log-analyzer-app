@@ -1,0 +1,17 @@
+# nginx frontend serving static files
+FROM nginx:alpine
+
+# Copy nginx configuration
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy static files
+COPY frontend/public/ /usr/share/nginx/html/
+
+# Create symlink to fix nginx path issue
+RUN ln -sf /usr/share/nginx/html /etc/nginx/html
+
+# Expose port
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

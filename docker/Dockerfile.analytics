@@ -1,0 +1,27 @@
+# Dockerfile for Analytics Service
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY backend/service-analytics/package*.json ./
+RUN npm install --only=production
+
+# Copy source code
+COPY backend/service-analytics/server.js ./
+
+# Create non-root user and shared directory
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 && \
+    mkdir -p /app/shared/logs && \
+    chown -R nodejs:nodejs /app
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
+EXPOSE 3000
+
+# Start the service
+CMD ["node", "server.js"]
